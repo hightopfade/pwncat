@@ -43,6 +43,10 @@ the latest usage and development documentation!
 
 **pwncat requires Python 3.9+ on Linux**
 
+Python >= 3.12 fork
+- incorporated fixups from D3vil0p3r
+- updates to the pyproject.toml
+
 ## Installation
 
 `pwncat` only depends on a working Python development environment running on Linux.
