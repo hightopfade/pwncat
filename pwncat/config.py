@@ -23,6 +23,7 @@ specific to your module or command.
 import os
 import copy
 import ipaddress
+from pathlib import Path
 from typing import Any, Dict, Union
 
 from prompt_toolkit.keys import ALL_KEYS, Keys
@@ -60,14 +61,14 @@ class KeyType:
         return self.value
 
 
-def local_file_type(value: str) -> str:
+def local_file_type(value: str) -> Path:
     """Ensure the local file exists"""
     if not os.path.isfile(value):
         raise ValueError(f"{value}: no such file or directory")
-    return value
+    return Path(value)
 
 
-def local_dir_type(value: str) -> str:
+def local_dir_type(value: str) -> Path:
     """Ensure the path specifies a local directory"""
 
     # Expand ~ in the path
@@ -75,7 +76,7 @@ def local_dir_type(value: str) -> str:
 
     if not os.path.isdir(value):
         raise ValueError(f"{value}: no such file or directory")
-    return value
+    return Path(value)
 
 
 def bool_type(value: str) -> bool:
@@ -102,16 +103,16 @@ class Config:
                 "type": ipaddress.ip_address,
             },
             "prefix": {"value": KeyType("c-k"), "type": KeyType},
-            "privkey": {"value": "data/pwncat", "type": local_file_type},
+            "privkey": {"value": Path("data/pwncat"), "type": local_file_type},
             "backdoor_user": {"value": "pwncat", "type": str},
             "backdoor_pass": {"value": "pwncat", "type": str},
             "on_load": {"value": "", "type": str},
             "db": {"value": "memory://", "type": str},
             "cross": {"value": None, "type": str},
-            "psmodules": {"value": ".", "type": local_dir_type},
+            "psmodules": {"value": Path("."), "type": local_dir_type},
             "verbose": {"value": False, "type": bool_type},
             "plugin_path": {
-                "value": "~/.local/share/pwncat",
+                "value": Path("~/.local/share/pwncat").expanduser(),
                 "type": local_dir_type,
             },
         }

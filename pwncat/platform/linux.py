@@ -136,7 +136,7 @@ class PopenLinux(pwncat.subprocess.Popen):
                 self.stdout_raw.raw.blocking = False
                 result = self.stdout_raw.peek(len(self.end_delim))
             finally:
-                self.stdout_raw.raw.blocking = False
+                self.stdout_raw.raw.blocking = True
 
             if result == b"" and self.stdout_raw.raw.eof:
                 self._receive_returncode()
@@ -862,7 +862,8 @@ class Linux(Platform):
             # NOTE: this is probably not great... but sometimes it fails when transitioning
             # states, and I can't pin down why. The second time normally succeeds, and I've
             # never observed it hanging for any significant amount of time.
-            while True:
+            max_attempts = 10
+            for attempt in range(max_attempts):
                 try:
                     proc = self.run(
                         "(id -ru;id -u;id -rg;id -g;id -G;)",
@@ -880,6 +881,8 @@ class Linux(Platform):
                     }
                     return self._id["ruid"]
                 except ValueError:
+                    if attempt == max_attempts - 1:
+                        raise PlatformError("failed to parse user ID after multiple attempts")
                     continue
         except CalledProcessError as exc:
             raise PlatformError(str(exc)) from exc

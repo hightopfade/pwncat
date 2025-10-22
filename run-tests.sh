@@ -5,9 +5,9 @@
 
 echo "[!] we can only test centos and ubuntu locally"
 
-CENTOS_CONTAINER=$(podman run --rm -d -p :22 -p :4444 -p :9999 -t calebjstewart/pwncat-testing:centos)
+CENTOS_CONTAINER=$(podman run --rm -d -p :22 -p :4444 -p :9999 -t docker.io/calebjstewart/pwncat-testing:centos)
 echo "[+] started centos container: $CENTOS_CONTAINER"
-UBUNTU_CONTAINER=$(podman run --rm -d -p :22 -p :4444 -p :9999 -t calebjstewart/pwncat-testing:ubuntu)
+UBUNTU_CONTAINER=$(podman run --rm -d -p :22 -p :4444 -p :9999 -t docker.io/calebjstewart/pwncat-testing:ubuntu)
 echo "[+] started centos container: $UBUNTU_CONTAINER"
 
 CENTOS_BIND_PORT=$(podman inspect "$CENTOS_CONTAINER" | jq -r '.[0].HostConfig.PortBindings["4444/tcp"][0].HostPort')
